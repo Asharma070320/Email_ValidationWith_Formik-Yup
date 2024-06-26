@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { GlobalStyle } from "./Styles/globalStyles";
 import { useFormik } from "formik";
-import { signUpSchema } from "./schemas";
+import { signUpSchema } from "./checking";
 
 const initialValues = {
   name: "",
@@ -18,16 +18,25 @@ const Registration = () => {
       validationSchema: signUpSchema,
       onSubmit: (values, action) => {
         console.log(
-          "🚀 ~ file: Registration.jsx ~ line 11 ~ Registration ~ values",
+          "Values",
           values
         );
         action.resetForm();
       },
     });
   console.log(
-    "🚀 ~ file: Registration.jsx ~ line 25 ~ Registration ~ errors",
+    "Errors",
     errors
   );
+
+  const allFieldsFilled = () => {
+    return (
+      values.name &&
+      values.email &&
+      values.password &&
+      values.confirm_password
+    );
+  };
 
   return (
     <>
@@ -38,9 +47,6 @@ const Registration = () => {
             <div className="modal-container">
               <div className="modal-left">
                 <h1 className="modal-title">Welcome!</h1>
-                {/* <p className="modal-desc">
-                  To the thapa technical website for programmers.
-                </p> */}
                 <form onSubmit={handleSubmit}>
                   <div className="input-block">
                     <label htmlFor="name" className="input-label">
@@ -115,17 +121,15 @@ const Registration = () => {
                     ) : null}
                   </div>
                   <div className="modal-buttons">
-                    {/* <a href="#" className="">
-                      Want to register using Gmail?
-                    </a> */}
-                    <button style={{display:'fl'}} className="input-button" type="submit">
+                    <button
+                      className="input-button"
+                      type="submit"
+                      disabled={!allFieldsFilled()}
+                    >
                       Sign Up
                     </button>
                   </div>
                 </form>
-                {/* <p className="sign-up">
-                  Already have an account? <a href="#">Sign In now</a>
-                </p> */}
               </div>
               <div className="modal-right">
                 <img
@@ -156,7 +160,6 @@ const Wrapper = styled.section`
 
   .modal {
     width: 100%;
-    /* height: 60px; */
     background: rgba(51, 51, 51, 0.5);
     display: flex;
     flex-direction: column;
@@ -171,7 +174,6 @@ const Wrapper = styled.section`
     border-radius: 10px;
     overflow: hidden;
     position: absolute;
-
     transition-duration: 0.3s;
     background: #fff;
   }
@@ -183,9 +185,6 @@ const Wrapper = styled.section`
   .form-error {
     font-size: 1.4rem;
     color: #b22b27;
-  }
-  .modal-desc {
-    margin: 6px 0 30px 0;
   }
   .modal-left {
     padding: 60px 30px 20px;
@@ -246,7 +245,11 @@ const Wrapper = styled.section`
     cursor: pointer;
     font-family: "Nunito", sans-serif;
   }
-  .input-button:hover {
+  .input-button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+  .input-button:hover:not(:disabled) {
     background: #55311c;
   }
 
